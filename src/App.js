@@ -1,7 +1,6 @@
 import React from "react"
 import Sidebar from "./components/Sidebar"
 import Editor from "./components/Editor"
-// eslint-disable-next-line
 import { data } from "./data"
 import {nanoid} from "nanoid"
 import "react-mde/lib/styles/css/react-mde-all.css";
@@ -18,7 +17,7 @@ export default function App() {
     )
     React.useEffect(() => {
         localStorage.setItem("notes", JSON.stringify(notes))
-        // console.log(notes[0].body.split("\n"))
+        // console.log(notes[1].body.split("\n"))
     }, [notes])
 
     function createNewNote() {
@@ -45,7 +44,18 @@ export default function App() {
             return newArray
         })
     }
-    
+
+    function deleteNote(event, noteId) {
+        event.stopPropagation()
+        console.log("delete note", noteId)
+        setNotes(oldNotes => oldNotes.filter(note => note.id !== noteId))
+        
+        // callback function oldNotes is parameters, return new array with result which is oldNotes.filter
+        // filter takes callback function, whatever we return from callback function is boolean to indicate whether the current item should be included in new array or not
+        // if note id property (note.id) is not equal noteId, it should be included to new array
+        // each note we are looking at has id and is not equal to noteId can be deleted
+    }
+
     function findCurrentNote() {
         return notes.find(note => {
             return note.id === currentNoteId
@@ -67,6 +77,7 @@ export default function App() {
                     currentNote={findCurrentNote()}
                     setCurrentNoteId={setCurrentNoteId}
                     newNote={createNewNote}
+                    deleteNote={deleteNote}
                 />
                 {
                     currentNoteId && 
